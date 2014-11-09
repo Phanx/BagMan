@@ -1,7 +1,7 @@
 --[[--------------------------------------------------------------------
 	BagMan
 	Lets you move and scale the default bag frames.
-	http://www.wowinterface.com/downloads/info-BagMan.html
+	http://www.wowinterface.com/downloads/info23285-BagMan.html
 	http://www.curse.com/addons/wow/bagman
 
 	Copyright (c) 2014 Phanx <addons@phanx.net>. All rights reserved.
@@ -12,6 +12,26 @@
 	long as you do not use my name or the name of this addon ANYWHERE in
 	your addon, including its name, outside of an optional attribution.
 ----------------------------------------------------------------------]]
+
+local L = {
+	AltDrag = "<Alt-Drag to move this bag>",
+	CtrlMouseWheel = "<Ctrl-MouseWheel to scale this bag>",
+	Version = "Version %s loaded.",
+	CmdResetHelp = "Use \"/bagman reset\" to reset the position and scale of all bags.",
+}
+if GetLocale() == "deDE" then
+	L.AltDrag = "<ALT-Ziehen, um diese Tasche zu bewegen>"
+	L.CtrlMouseWheel = "<STRG-Mausrad, um die Größe dieser Tasche zu ändern>"
+	L.Version = "Version %s geladen."
+	L.CmdResetHelp = "Gebt \"/bagman reset\" ein, um die Position und Größe aller Taschen zurückzusetzen."
+elseif GetLocale():match("^es") then
+	L.AltDrag = "<Alt + arrastre para mover esta bolsa>"
+	L.CtrlMouseWheel = "<Ctrl + rueda del ratón para cambiar el tamaño de esta bolsa>"
+	L.CmdResetHelp = "Introduce \"/bagman reset\" para restablecer la posición y tamaño de todas las bolsas."
+	L.Version = "Versión %s cargada."
+end
+
+------------------------------------------------------------------------
 
 local function SavePosition(f)
 	local name = f:GetName()
@@ -38,31 +58,31 @@ local function SavePosition(f)
 		y = f:GetBottom() * scale
 	end
 
-	local t = BagManDB[name] or {}
-	t.point = vpoint..hpoint
-	t.x = x
-	t.y = y
-	BagManDB[name] = t
+	local db = BagManDB[name] or {}
+	db.point = vpoint..hpoint
+	db.x = x
+	db.y = y
+	BagManDB[name] = db
 
 	f:ClearAllPoints()
-	f:SetPoint(t.point, floor(x / scale + 0.5), floor(y / scale + 0.5))
-	--print("|cffff9f3fBagMan|r", t.point, x, y)
+	f:SetPoint(db.point, floor(x / scale + 0.5), floor(y / scale + 0.5))
+	--print("|cffff9f3fBagMan|r", db.point, x, y)
 end
 
 local function RestorePosition(f)
 	local name = f:GetName()
 	--print("|cffff9f3fBagMan|r", "RestorePosition", name)
-	local t = BagManDB[name]
-	local s = t.scale or 1
+	local db = BagManDB[name]
+	local s = db.scale or 1
 	f:ClearAllPoints()
-	f:SetPoint(t.point, t.x / s, t.y / s)
+	f:SetPoint(db.point, db.x / s, db.y / s)
 end
 
 local function SetScale(f, scale)
 	local name = f:GetName()
 	--print("|cffff9f3fBagMan|r", "SetScale", name, scale)
-	local t = BagManDB[name]
-	t.scale = scale
+	local db = BagManDB[name]
+	db.scale = scale
 	f:SetScale(scale)
 	RestorePosition(f)
 end
@@ -72,9 +92,9 @@ local function RestoreAllPositions()
 	for i = 1, NUM_CONTAINER_FRAMES do
 		local name = "ContainerFrame"..i
 		local f = _G[name]
-		local t = BagManDB[name]
-		if t and t.point then
-			SetScale(f, t.scale or 1)
+		local db = BagManDB[name]
+		if db and db.point then
+			SetScale(f, db.scale or 1)
 		elseif f:IsShown() then
 			--print("|cffff9f3fBagMan|r", "NEW", name)
 			SavePosition(f)
@@ -134,6 +154,12 @@ local function OnMouseWheel(t, delta)
 	end
 end
 
+local function OnEnter(portrait)
+	GameTooltip:AddLine(L.AltDrag, 0, 1, 0)
+	GameTooltip:AddLine(L.CtrlMouseWheel, 0, 1, 0)
+	GameTooltip:Show()
+end
+
 ------------------------------------------------------------------------
 
 BagManDB = {}
@@ -141,7 +167,6 @@ BagManDB = {}
 local BagMan = CreateFrame("Frame")
 BagMan:RegisterEvent("PLAYER_LOGIN")
 BagMan:SetScript("OnEvent", function(self, event)
-	--wipe(BagManDB)
 	self:UnregisterEvent(event)
 	--print("|cffff9f3fBagMan|r", event)
 
@@ -163,6 +188,9 @@ BagMan:SetScript("OnEvent", function(self, event)
 
 		t:EnableMouseWheel(true)
 		t:SetScript("OnMouseWheel", OnMouseWheel)
+
+		local p = f.PortraitButton
+		p:HookScript("OnEnter", OnEnter)
 
 		if BagManDB[name] then
 			RestorePosition(f)
@@ -186,6 +214,7 @@ SlashCmdList.BAGMAN = function(cmd)
 			f:SetUserPlaced(false)
 			f:ClearAllPoints()
 		end
-		UpdateContainerFrameAnchors()
+		return UpdateContainerFrameAnchors()
 	end
+	print("|cffffdd00BagMan:|r", format(L.Version, GetAddOnMetadata("BagMan", "Version")), L.CmdResetHelp)
 end
