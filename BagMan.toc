@@ -1,5 +1,5 @@
 ## Interface: 60000
-## Version: 6.0.3.wowi:revision
+## Version: 60000.1
 
 ## Title: BagMan
 ## Notes: Lets you move and scale the default bag frames.
