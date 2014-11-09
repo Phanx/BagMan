@@ -1,0 +1,20 @@
+## Interface: 60000
+## Version: 6.0.3.wowi:revision
+
+## Title: BagMan
+## Notes: Lets you move and scale the default bag frames.
+## Notes-deDE: Ermöglicht, die Standard-Taschen zu bewegen, und ihre Größe zu ändern.
+## Notes-esES: Te permite mover y cambiar la escala de las bolsas en la IU predeterminada.
+## Notes-esMX: Te permite mover y cambiar la escala de las bolsas en la IU predeterminada.
+
+## Author: Phanx
+## X-Email: addons@phanx.net
+## X-Copyright: Copyright (c) 2014 Phanx.
+## X-License: All rights reserved.
+## X-CompatibleLocales: deDE, enUS, esES, esMX, frFR, itIT, koKR, ptBR, ruRU, zhCN, zhTW
+## X-Curse-Project-ID: bagman
+## X-WoWI-ID: 
+
+## SavedVariables: BagManDB
+
+BagMan.lua
