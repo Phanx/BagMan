@@ -16,6 +16,6 @@
 ## X-Curse-Project-ID: bagman
 ## X-WoWI-ID: 23285
 
-## SavedVariables: BagManDB
+## SavedVariablesPerCharacter: BagManDB
 
 BagMan.lua
