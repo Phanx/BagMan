@@ -17,18 +17,33 @@ local L = {
 	AltDrag = "<Alt-Drag to move this bag>",
 	CtrlMouseWheel = "<Ctrl-MouseWheel to scale this bag>",
 	Version = "Version %s loaded.",
-	CmdResetHelp = "Use \"/bagman reset\" to reset the position and scale of all bags.",
+	CmdHelp = "Available commands:",
+	CmdReset = "reset",
+	CmdResetHelp = "reset the position and scale of all bags",
+	CmdScale = "scale",
+	CmdScaleHelp = "change the scale of all bags (allowed values: 0.5-2)",
+	CmdScaleErr = "Scale must be between 0.5 and 2.",
 }
 if GetLocale() == "deDE" then
 	L.AltDrag = "<ALT-Ziehen, um diese Tasche zu bewegen>"
 	L.CtrlMouseWheel = "<STRG-Mausrad, um die Größe dieser Tasche zu ändern>"
 	L.Version = "Version %s geladen."
-	L.CmdResetHelp = "Gebt \"/bagman reset\" ein, um die Position und Größe aller Taschen zurückzusetzen."
+	L.CmdHelp = "Verfügbare Befehle:"
+	L.CmdReset = "zurücksetzen"
+	L.CmdResetHelp = "die Position und Größe aller Taschen zurücksetzen"
+	L.CmdScale = "größe"
+	L.CmdScaleHelp = "die Größe aller Taschen ändern (erlaubte Werte: 0.5-2)"
+	L.CmdScaleErr = "Größe muss zwischen 0.5 und 2 sein."
 elseif GetLocale():match("^es") then
 	L.AltDrag = "<Alt + arrastre para mover esta bolsa>"
 	L.CtrlMouseWheel = "<Ctrl + rueda del ratón para cambiar el tamaño de esta bolsa>"
-	L.CmdResetHelp = "Introduce \"/bagman reset\" para restablecer la posición y tamaño de todas las bolsas."
 	L.Version = "Versión %s cargada."
+	L.CmdHelp = "Comandos disponibles:"
+	L.CmdReset = "restablecer"
+	L.CmdResetHelp = "restablecer la posición y tamaño de todas las bolsas"
+	L.CmdScale = "tamaño"
+	L.CmdScaleHelp = "cambiar el tamaño de todas bolsas (valores permitidos: 0.5-2)"
+	L.CmdScaleErr = "El tamaño debe estar entre 0.5 y 2."
 end
 
 ------------------------------------------------------------------------
@@ -81,8 +96,10 @@ end
 local function SetScale(f, scale)
 	local name = f:GetName()
 	--print("|cffff9f3fBagMan|r", "SetScale", name, scale)
-	local db = BagManDB[name]
+	local db = BagManDB[name] or {}
 	db.scale = scale
+	BagManDB[name] = db
+
 	f:SetScale(scale)
 	RestorePosition(f)
 end
@@ -146,9 +163,9 @@ local function OnMouseWheel(t, delta)
 		local f = t:GetParent()
 		local scale = f:GetScale()
 		if delta > 0 then
-			scale = min(scale + 0.05, 3)
+			scale = min(scale + 0.05, 2)
 		elseif delta < 0 then
-			scale = max(scale - 0.05, 0.1)
+			scale = max(scale - 0.05, 0.5)
 		end
 		SetScale(f, floor(scale * 100 + 0.5) / 100)
 	end
@@ -204,9 +221,9 @@ end)
 
 SLASH_BAGMAN1 = "/bagman"
 SlashCmdList.BAGMAN = function(cmd)
-	cmd = strlower(strtrim(cmd))
+	local cmd, arg = strsplit(" ", strlower(strtrim(cmd)))
 	--print("|cffff9f3fBagMan|r", cmd)
-	if cmd == "reset" then
+	if cmd == "reset" or cmd == L.CmdReset then
 		wipe(BagManDB)
 		for i = 1, NUM_CONTAINER_FRAMES do
 			local f = _G["ContainerFrame"..i]
@@ -215,6 +232,18 @@ SlashCmdList.BAGMAN = function(cmd)
 			f:ClearAllPoints()
 		end
 		return UpdateContainerFrameAnchors()
+	elseif cmd == "scale" or cmd == L.CmdScale then
+		local scale = tonumber(arg)
+		if scale and scale >= 0.5 and scale <= 2 then
+			for i = 1, NUM_CONTAINER_FRAMES do
+				local f = _G["ContainerFrame"..i]
+				SetScale(f, scale)
+			end
+		else
+			print("|cffffc00BagMan:|r", L.CmdScaleErr)
+		end
 	end
-	print("|cffffdd00BagMan:|r", format(L.Version, GetAddOnMetadata("BagMan", "Version")), L.CmdResetHelp)
+	print("|cffffc00BagMan:|r", format(L.Version, GetAddOnMetadata("BagMan", "Version")), L.CmdHelp)
+	print(format("- |cffffc00%s|r - %s", L.CmdReset, L.CmdResetHelp))
+	print(format("- |cffffc00%s|r - %s", L.CmdScale, L.CmdScaleHelp))
 end
