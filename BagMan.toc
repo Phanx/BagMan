@@ -1,5 +1,5 @@
 ## Interface: 60000
-## Version: 60000.1
+## Version: 6.0.3.1
 
 ## Title: BagMan
 ## Notes: Lets you move and scale the bag frames.
