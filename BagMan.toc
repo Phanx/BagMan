@@ -1,5 +1,5 @@
 ## Interface: 60000
-## Version: 6.0.3.2
+## Version: 6.0.3.3
 
 ## Title: BagMan
 ## Notes: Lets you move and scale the bag frames.
@@ -16,6 +16,7 @@
 ## X-Curse-Project-ID: bagman
 ## X-WoWI-ID: 23285
 
-## SavedVariablesPerCharacter: BagManDB
+## SavedVariables: BagManDB
+## SavedVariablesPerCharacter: BagManDBPC
 
 BagMan.lua
