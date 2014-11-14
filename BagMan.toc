@@ -9,12 +9,8 @@
 
 ## Author: Phanx
 ## X-Email: addons@phanx.net
-## X-Copyright: Copyright (c) 2014 Phanx.
-## X-License: All rights reserved.
-## X-CompatibleLocales: deDE, enUS, esES, esMX, frFR, itIT, koKR, ptBR, ruRU, zhCN, zhTW
-## X-Localizations: deDE, enUS, esES, esMX
-## X-Curse-Project-ID: bagman
-## X-WoWI-ID: 23285
+## X-Copyright: Copyright (c) 2014 Phanx. All rights reserved.
+## X-Website: https://github.com/Phanx/BagMan
 
 ## SavedVariables: BagManDB
 ## SavedVariablesPerCharacter: BagManDBPC
