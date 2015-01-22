@@ -1,7 +1,7 @@
 --[[--------------------------------------------------------------------
 	BagMan
 	Lets you move and scale the default bag frames.
-	Copyright (c) 2014 Phanx <addons@phanx.net>. All rights reserved.
+	Copyright (c) 2014, 2015 Phanx <addons@phanx.net>. All rights reserved.
 	http://www.wowinterface.com/downloads/info23285-BagMan.html
 	http://www.curse.com/addons/wow/bagman
 ----------------------------------------------------------------------]]
